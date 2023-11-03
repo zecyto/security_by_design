@@ -35,18 +35,24 @@ class DB_Manager:
     def show_user(self, customer_number):
         sql_command = f"SELECT * FROM {self.table_name} where customer_number = {customer_number}"
         self.cursor.execute(sql_command)
-        return self.cursor.fetchone()
+        print(self.cursor.fetchone())
     
     def show_all_users(self):
         sql_command = f"SELECT * FROM {self.table_name}"
         self.cursor.execute(sql_command)
-        return self.cursor.fetchall()
-
-
+        print(self.cursor.fetchall())
+    
+    def delete_user(self, customer_number):
+        sql_command = f"DELETE FROM {self.table_name} where customer_number = {customer_number}"
+        self.cursor.execute(sql_command)
+        self.connection.commit()
+    
 if __name__ == "__main__":
-    DB = DB_Manager("kundendatenbank.sql", "users")
+    DB = DB_Manager("database/kundendatenbank.sql", "users")
     DB.connect()
     DB.insert_user((3, "Sercan", "Berg", "m", "2000-08-17"))
+    DB.show_all_users()
     DB.update_user((2, "lname", "Testo"))
-    print(DB.show_user(2))
-    print(DB.show_all_users())
+    DB.show_all_users()
+    DB.delete_user(2)
+    DB.show_all_users()
