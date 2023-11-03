@@ -1,5 +1,5 @@
 import sqlite3
-connection = sqlite3.connect("kundendatenbank.sql")
+connection = sqlite3.connect("database/kundendatenbank.sql")
 cursor = connection.cursor()
  
 #cursor.execute("""DROP TABLE users;""")
