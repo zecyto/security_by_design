@@ -1,4 +1,5 @@
 import sqlite3
+import secrets
 
 class DB_Manager:
     db_name: str
@@ -20,9 +21,11 @@ class DB_Manager:
     def disconnect(self):
         self.connection.close()
 
-    def insert_user(self, args):
-        customer_number, fname, lname, gender, birth_date = args
-        sql_command = f'INSERT INTO {self.table_name} (customer_number, fname, lname, gender, birth_date) VALUES ({customer_number}, \"{fname}\", \"{lname}\", \"{gender}\", \"{birth_date}\");'
+    def insert_user(self, args, random_hex = None):
+        customer_number, email, fname, lname, joining, password = args
+        if not random_hex:
+            random_hex = secrets.token_hex(32)
+        sql_command = f'INSERT INTO {self.table_name} (customer_number, email, fname, lname, joining, password, salt) VALUES ({customer_number}, \"{email}\", \"{fname}\", \"{lname}\", \"{joining}\", \"{password}\", \"{random_hex}\");'
         self.cursor.execute(sql_command)
         self.connection.commit()
     
@@ -37,6 +40,13 @@ class DB_Manager:
         self.cursor.execute(sql_command)
         print(self.cursor.fetchone())
     
+    def get_login_data_by_mail(self, mail):
+        sql_command = f"SELECT password, salt, customer_number FROM {self.table_name} where email = \"{mail}\""
+        self.cursor.execute(sql_command)
+        return self.cursor.fetchone()
+        
+
+    
     def show_all_users(self):
         sql_command = f"SELECT * FROM {self.table_name}"
         self.cursor.execute(sql_command)
@@ -50,9 +60,10 @@ class DB_Manager:
 if __name__ == "__main__":
     DB = DB_Manager("database/kundendatenbank.sql", "users")
     DB.connect()
-    DB.insert_user((3, "Sercan", "Berg", "m", "2000-08-17"))
+    DB.insert_user(("NULL", "Sercan@B", "Sercan", "Berg", "2000-08-17", "1234567abc"))
     DB.show_all_users()
     DB.update_user((2, "lname", "Testo"))
-    DB.show_all_users()
+    #DB.show_all_users()
+    DB.get_login_data_by_mail("William@S")
     DB.delete_user(2)
-    DB.show_all_users()
+    #DB.show_all_users()
