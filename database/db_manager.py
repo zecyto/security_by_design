@@ -44,6 +44,11 @@ class DB_Manager:
         sql_command = f"SELECT password, salt, customer_number FROM {self.table_name} where email = \"{mail}\""
         self.cursor.execute(sql_command)
         return self.cursor.fetchone()
+
+    def get_mail_and_name_by_id(self, id):
+        sql_command = f"SELECT email, fname FROM {self.table_name} where customer_number = {id}"
+        self.cursor.execute(sql_command)
+        return self.cursor.fetchone()
         
 
     

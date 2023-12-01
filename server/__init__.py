@@ -2,6 +2,7 @@ from flask import Flask
 from flask_sqlalchemy import SQLAlchemy
 from flask_login import LoginManager
 from server.User import User
+from database.db_manager import DB_Manager
 
 # init SQLAlchemy so we can use it later in our models
 db = SQLAlchemy()
@@ -19,8 +20,11 @@ def create_app():
     login_manager.init_app(app)
 
     @login_manager.user_loader
-    def load_user(email):
-        return User(email)
+    def load_user(user_id):
+        db = DB_Manager("database/kundendatenbank.sql", "users")
+        db.connect()
+        data = db.get_mail_and_name_by_id(user_id)
+        return User(int(user_id), data[0], data[1])
 
 
     # blueprint for auth routes in our app

@@ -3,7 +3,7 @@ from werkzeug.security import generate_password_hash, check_password_hash
 from database.db_manager import DB_Manager
 from datetime import date
 from hashlib import sha256
-from flask_login import login_user
+from flask_login import login_user, logout_user, login_required
 from server.User import User
 import secrets
 
@@ -33,6 +33,7 @@ def login_post():
     user_pw = sha256(bytes(x ^ y for x, y in zip(bytes.fromhex(data[1]), bytes.fromhex(password)))).hexdigest()
 
     if user_pw == data[0]:
+        user = User(data[2])
         login_user(user, remember=True)
         return redirect(url_for('main.profile'))
 
@@ -71,5 +72,7 @@ def signup_post():
 
 
 @auth.route('/logout')
+@login_required
 def logout():
-    return 'Logout'
+    logout_user()
+    return redirect(url_for('main.index'))
