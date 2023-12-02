@@ -35,10 +35,10 @@ class DB_Manager:
         self.cursor.execute(sql_command)
         self.connection.commit()
 
-    def show_user(self, customer_number):
+    def get_user(self, customer_number):
         sql_command = f"SELECT * FROM {self.table_name} where customer_number = {customer_number}"
         self.cursor.execute(sql_command)
-        print(self.cursor.fetchone())
+        return self.cursor.fetchone()
     
     def get_login_data_by_mail(self, mail):
         sql_command = f"SELECT password, salt, customer_number FROM {self.table_name} where email = \"{mail}\""
@@ -47,6 +47,11 @@ class DB_Manager:
 
     def get_mail_and_name_by_id(self, id):
         sql_command = f"SELECT email, fname FROM {self.table_name} where customer_number = {id}"
+        self.cursor.execute(sql_command)
+        return self.cursor.fetchone()
+
+    def get_mfa_by_id(self, id):
+        sql_command = f"SELECT mfa FROM {self.table_name} where customer_number = {id}"
         self.cursor.execute(sql_command)
         return self.cursor.fetchone()
         

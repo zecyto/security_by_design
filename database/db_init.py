@@ -15,7 +15,8 @@ fname VARCHAR(20),
 lname VARCHAR(30), 
 joining DATE,
 password VARCHAR(64),
-salt VARCHAR(64));"""
+salt VARCHAR(64),
+mfa VARCHAR(64) NULL);"""
 cursor.execute(sql_command)
 
 sql_command = """INSERT INTO users (customer_number, email, fname, lname, joining, password, salt)
