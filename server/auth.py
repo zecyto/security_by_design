@@ -12,6 +12,18 @@ import qrcode
 from io import BytesIO
 
 
+from functools import wraps
+from flask import abort
+
+def admin_required(func):
+    @wraps(func)
+    def decorated_view(*args, **kwargs):
+        if current_user._role != 'admin':
+            abort(403)  # 403 Forbidden
+        return func(*args, **kwargs)
+    return decorated_view
+
+
 from . import db
 
 auth = Blueprint('auth', __name__)
@@ -79,6 +91,8 @@ def signup_post():
         return redirect(url_for('auth.signup'))
     else:
         DB.insert_user(("NULL", email, fname, lname, joining, pw), salt)
+        new_id = DB.get_id_by_mail(email)
+        DB.update_user((new_id[0], "role", "admin"))
         DB.show_all_users()
         DB.disconnect()
 
@@ -122,11 +136,10 @@ def signup_2fa_form():
         DB.disconnect()
 
         flash("The TOTP 2FA token is valid", "success")
-        return redirect(url_for("auth.login"))
+        return redirect(url_for('main.profile'))
     else:
         # inform users if OTP is invalid
-        print("nene")
-        flash("You have supplied an invalid 2FA token!", "danger")
+        flash("You have supplied an invalid 2FA token! Please scan the new QR-Code!", "danger")
         return redirect(url_for("auth.signup_2fa"))
 
 
@@ -136,3 +149,10 @@ def signup_2fa_form():
 def logout():
     logout_user()
     return redirect(url_for('main.index'))
+
+@auth.route('/admin/dashboard')
+@login_required
+@admin_required
+def admin_dashboard():
+    # Nur Administratoren haben Zugriff
+    return render_template('admin_dashboard.html')

@@ -24,7 +24,9 @@ def create_app():
         db = DB_Manager("database/kundendatenbank.sql", "users")
         db.connect()
         data = db.get_mail_and_name_by_id(user_id)
-        return User(int(user_id), data[0], data[1])
+        role = db.get_role_by_id(user_id)
+        db.disconnect()                                     # new
+        return User(int(user_id), data[0], data[1], role[0])
 
 
     # blueprint for auth routes in our app
@@ -34,5 +36,9 @@ def create_app():
     # blueprint for non-auth parts of app
     from .main import main as main_blueprint
     app.register_blueprint(main_blueprint)
+
+    from .admin import admin as admin_blueprint
+    app.register_blueprint(admin_blueprint)
+
 
     return app

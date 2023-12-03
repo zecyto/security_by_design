@@ -54,9 +54,23 @@ class DB_Manager:
         sql_command = f"SELECT mfa FROM {self.table_name} where customer_number = {id}"
         self.cursor.execute(sql_command)
         return self.cursor.fetchone()
-        
 
+    def get_id_by_mail(self, mail):
+        sql_command = f"SELECT customer_number FROM {self.table_name} where email = \"{mail}\""
+        self.cursor.execute(sql_command)
+        return self.cursor.fetchone()
     
+    def get_role_by_id(self, id):
+        sql_command = f"SELECT role FROM {self.table_name} where customer_number = {id}"
+        self.cursor.execute(sql_command)
+        return self.cursor.fetchone()
+    
+    def set_admin(self, id, colname = "role", new_val = "admin"):
+        sql_command = f"UPDATE {self.table_name} SET {colname} = \"{new_val}\" WHERE customer_number = {id}"
+        self.cursor.execute(sql_command)
+        self.connection.commit()
+
+
     def show_all_users(self):
         sql_command = f"SELECT * FROM {self.table_name}"
         self.cursor.execute(sql_command)
@@ -70,10 +84,11 @@ class DB_Manager:
 if __name__ == "__main__":
     DB = DB_Manager("database/kundendatenbank.sql", "users")
     DB.connect()
-    DB.insert_user(("NULL", "Sercan@B", "Sercan", "Berg", "2000-08-17", "1234567abc"))
+    #DB.insert_user(("NULL", "Sercan@B", "Sercan", "Berg", "2000-08-17", "1234567abc"))
+    #DB.show_all_users()
+    #DB.update_user((2, "lname", "Testo"))
+    #DB.show_all_users()
+    #DB.update_user((3, "role", "Testo"))
+    #DB.get_login_data_by_mail("William@S")
+    #DB.delete_user(2)
     DB.show_all_users()
-    DB.update_user((2, "lname", "Testo"))
-    #DB.show_all_users()
-    DB.get_login_data_by_mail("William@S")
-    DB.delete_user(2)
-    #DB.show_all_users()

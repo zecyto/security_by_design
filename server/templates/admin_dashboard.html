@@ -1,0 +1,13 @@
+{% extends "base.html" %}
+
+{% block content %}
+  <h1 class="title">
+    Welcome, Admin!
+  </h1>
+
+  <!-- Delete User Button -->
+  <a href="{{ url_for('admin.delete_user') }}" class="btn btn-danger">Delete User</a>
+
+  <!-- Add Power Meter Button -->
+  <a href="{{ url_for('admin.reset_user_pw') }}" class="btn btn-success">Add Power Meter</a>
+{% endblock %}

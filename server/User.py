@@ -6,10 +6,11 @@ class User(UserMixin):
     _email: str
     _name: str
 
-    def __init__(self, id, email = None, name = None) -> None:
+    def __init__(self, id, email = None, name = None, role = "user") -> None:
         self._id = id
         self._email = email
         self._name = name
+        self._role = role
 
     def get_id(self):
         return self._id
