@@ -12,11 +12,78 @@
 </head>
 
 <style>
+html, body {
+    height: 100%;
+    margin: 0;
+}
+
+/* Hauptbereich für Inhalte mit Flexbox */
+.main-content {
+    display: flex;
+    justify-content: space-around;
+    align-items: flex-start;
+    flex-wrap: wrap; /* Sorgt dafür, dass die Abschnitte bei Bedarf umgebrochen werden */
+}
+
+/* Stile für jede Sektion, um sie flexibel zu machen */
+.main-content > section {
+    flex: 1; /* Jeder Abschnitt nimmt gleichen Platz ein */
+    margin: 10px; /* Fügt einen Außenabstand hinzu */
+    min-width: 250px; /* Minimale Breite für jeden Abschnitt, um zu vermeiden, dass sie zu schmal werden */
+    box-sizing: border-box; /* Stellt sicher, dass Padding und Border im Width enthalten sind */
+}
+
+/* Responsive Design: Bei kleinen Bildschirmen werden die Abschnitte untereinander angeordnet */
+@media (max-width: 768px) {
+    .main-content {
+        flex-direction: column;
+        align-items: stretch;
+    }
+    
+    .main-content > section {
+        /* Nimmt die volle Breite ein, um auf kleinen Bildschirmen gut auszusehen */
+        flex-basis: 100%;
+        margin: 0;
+    }
+}
+
+.title {
+    font-size: 4em; /* Erhöht die Schriftgröße */
+    font-weight: bold; /* Macht die Schrift fett */
+    color: #ffffff; /* Weißer Text, Sie können dies je nach Hintergrundfarbe ändern */
+    text-align: center; /* Zentriert den Titel */
+    margin-top: 0; /* Entfernt den oberen Rand */
+    padding-top: 0px; /* Fügt oben etwas Platz hinzu */
+}
+
+.subtitle {
+    color: white;
+    font-size: 2em;
+}
+
+.main-content {
+    color: white;
+
+}
+
+.services {
+    color: white;
+}
+
+.contact {
+    color: white;
+}
+
+/* Footer-Styles */
 .footer {
-  background-color: #333;
-  color: white;
-  text-align: center;
-  padding: 20px 0;
+    background-color: #6a8e8f;
+    color: white;
+    text-align: center;
+    padding: 20px 0;
+    position: fixed; /* Fixieren des Footers */
+    bottom: 0; /* Am unteren Rand der Seite */
+    left: 0;
+    width: 100%; /* Sorgt dafür, dass der Footer die volle Breite einnimmt */
 }
 
 .footer a {
@@ -32,7 +99,7 @@
 
 <body>
     
-    <section class="hero is-primary is-fullheight"  style="background-color: blueviolet;">
+    <section class="hero is-primary is-fullheight"  style="background-color: #526566;">
 
         <div class="hero-head">
             <nav class="navbar">
