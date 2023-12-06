@@ -3,6 +3,7 @@ from flask_sqlalchemy import SQLAlchemy
 from flask_login import LoginManager
 from server.User import User
 from database.db_manager import DB_Manager
+from flask_sslify import SSLify
 
 # init SQLAlchemy so we can use it later in our models
 db = SQLAlchemy()

@@ -91,8 +91,6 @@ def signup_post():
         return redirect(url_for('auth.signup'))
     else:
         DB.insert_user(("NULL", email, fname, lname, joining, pw), salt)
-        new_id = DB.get_id_by_mail(email)
-        DB.update_user((new_id[0], "role", "admin"))
         DB.show_all_users()
         DB.disconnect()
 

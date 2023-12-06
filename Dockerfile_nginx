@@ -1,0 +1,13 @@
+# Dockerfile_nginx
+
+# Verwende das offizielle NGINX-Image als Basis
+FROM nginx:latest
+
+# Kopiere die NGINX-Konfigurationsdatei in den Container
+COPY nginx-config/site.conf /etc/nginx/conf.d/default.conf
+
+# Kopiere die SSL-Zertifikate und den privaten Schlüssel in den Container
+COPY server_config/cert/ /etc/nginx/cert/
+
+# Starte den NGINX-Server
+CMD ["nginx", "-g", "daemon off;"]
