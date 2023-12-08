@@ -19,7 +19,7 @@ def admin_required(func):
     @wraps(func)
     def decorated_view(*args, **kwargs):
         if current_user._role != 'admin':
-            abort(403)  # 403 Forbidden
+            abort(404) 
         return func(*args, **kwargs)
     return decorated_view
 
@@ -30,31 +30,42 @@ auth = Blueprint('auth', __name__)
 
 @auth.route('/login')
 def login():
-    return render_template('login.html')
+    return render_template('login.html', user_authenticated = current_user.is_authenticated)
 
 @auth.route('/login', methods=['POST'])
 def login_post():
     email = request.form.get('email')
     password = request.form.get("hashedPassword")
+    print(password)
     otp = request.form.get("otp")
     DB = DB_Manager("database/kundendatenbank.sql", "users")
     DB.connect()
     data = DB.get_login_data_by_mail(email)
-
+    print(f"Hallo was ist kaputt {data}")
+    DB.show_all_users()
     if not data:
-        data = ["Fail", "aa"*32]
-        mfa = [None]
+        data = ["Fail", "aa"*32, 0, 0]
+        mfa = [None]   
     else:
         mfa = DB.get_mfa_by_id(data[2])
+
+    if data[3] >=8:
+        flash('Your Account has been blocked cause you reached the maximum of failed Logins')
+        return redirect(url_for('auth.login'))
+
     DB.disconnect()
     
     user_pw = sha256(bytes(x ^ y for x, y in zip(bytes.fromhex(data[1]), bytes.fromhex(password)))).hexdigest()
 
     if mfa[0] and not otp and user_pw == data[0]:
-        return render_template("login_2fa.html", email = email, password = password)
+        return render_template("login_2fa.html", email = email, password = password, user_authenticated = current_user.is_authenticated)
 
 
     if user_pw == data[0]:
+        DB = DB_Manager("database/kundendatenbank.sql", "users")
+        DB.connect()
+        DB.update_user((data[2], "failed_login", 0))
+        DB.disconnect()
         if mfa[0]:
             if pyotp.TOTP(mfa[0]).verify(otp):
                 user = User(data[2])
@@ -65,13 +76,22 @@ def login_post():
             login_user(user, remember=True)
             return redirect(url_for('main.profile'))
 
+    if data[0] != "Fail":
+        DB = DB_Manager("database/kundendatenbank.sql", "users")
+        DB.connect()
+        counter = data[3]+ 1
+        DB.update_user((data[2], "failed_login", counter))
+        DB.disconnect()
     
-    flash('Please check your login details and try again.')
+    if data[3] >= 5:
+        flash(f'Dein Account wird nach {8-data[3]} weiteren fehlgeschlagen Loginversuchen gesperrt')
+    else:
+        flash('Bitte überprüfe deine Logindaten und versuche es erneut.')
     return redirect(url_for('auth.login'))
 
 @auth.route('/signup')
 def signup():
-    return render_template('signup.html')
+    return render_template('signup.html', user_authenticated = current_user.is_authenticated)
 
 @auth.route('/signup', methods=['POST'])
 def signup_post():
@@ -114,7 +134,7 @@ def signup_2fa():
     qr.save(buffered, format="PNG")
     qr_base64 = base64.b64encode(buffered.getvalue()).decode("utf-8")
 
-    return render_template("signup_2fa.html", secret=secret, qr_code=qr_base64)
+    return render_template("signup_2fa.html", secret=secret, qr_code=qr_base64, user_authenticated = current_user.is_authenticated)
 
 @auth.route("/signup/2fa/", methods=["POST"])
 @login_required
@@ -153,4 +173,42 @@ def logout():
 @admin_required
 def admin_dashboard():
     # Nur Administratoren haben Zugriff
-    return render_template('admin_dashboard.html')
+    return render_template('admin_dashboard.html', user_authenticated = current_user.is_authenticated)
+
+@auth.route('/reset_password')
+@login_required
+def reset_password():
+    return render_template('reset_password.html', user_authenticated = current_user.is_authenticated)
+
+@auth.route('/reset_password', methods=['POST'])
+@login_required
+def reset_password_post():
+    email = current_user._email
+    password = request.form.get("hashedPasswordOld")
+    print(password)
+    DB = DB_Manager("database/kundendatenbank.sql", "users")
+    DB.connect()
+    data = DB.get_login_data_by_mail(email)
+    DB.disconnect()
+
+    if not data:
+        data = ["Fail", "aa"*32]
+    
+    user_pw = sha256(bytes(x ^ y for x, y in zip(bytes.fromhex(data[1]), bytes.fromhex(password)))).hexdigest()
+
+    if user_pw == data[0]:
+            password = request.form.get("hashedPasswordNew")
+            salt = secrets.token_hex(32)
+            pw = sha256(bytes(x ^ y for x, y in zip(bytes.fromhex(salt), bytes.fromhex(password)))).hexdigest()
+            DB = DB_Manager("database/kundendatenbank.sql", "users")
+            DB.connect()
+            DB.update_user((current_user._id, "password", pw))
+            DB.update_user((current_user._id, "salt", salt))
+            DB.disconnect()
+            print("Ahjo")
+            flash("Passwort erfolgreich geändert", 'success')
+            return redirect(url_for('main.profile'))
+
+    
+    flash('Falsches Password')
+    return redirect(url_for('auth.reset_password'))

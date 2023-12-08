@@ -1,7 +1,59 @@
 {% extends "base.html" %}
 
 {% block content %}
-<h1 class="title">
-  Welcome, {{ name }}!
-</h1>
+<h3 class="title">
+  Willkommen, {{ name }}!
+</h3>
+{% with messages = get_flashed_messages() %}
+{% if messages %}
+    <div class="notification is-success">
+        {{ messages[0] }}
+    </div>
+{% endif %}
+{% endwith %}
+
+<div class="container mt-5">
+
+  <div class="row">
+    <div class="col-md-4">
+      <button type="button" onclick="redirectToResetPW()" class="btn btn-primary btn-block mb-3">
+        Passwort ändern  <i class="fas fa-key"></i>
+      </button>
+    </div>
+    <div class="col-md-4">
+      <button type="button" onclick="redirectTo2FA()" class="btn btn-success btn-block mb-3">2FA Token hinzufügen <i class="fas fa-key"></i></button>
+    </div>
+    <div class="col-md-4">
+      <button type="button" onclick="redirectToSmartmeter()" class="btn btn-primary btn-block mb-3">Smartmeter einsehen <i class="far fa-eye"></i></button>
+    </div>
+  </div>
+
+  <div class="row">
+    <div class="col-md-4">
+      <button type="button" class="btn btn-danger btn-block mb-3">
+        Account löschen <i class="fas fa-trash"></i>
+      </button>
+      
+    </div>
+    <div class="col-md-4">
+      <button type="button" class="btn btn-danger btn-block mb-3"> 2FA entfernen <i class="fas fa-trash"></i></button>
+    </div>
+  </div>
+</div>
+
+
+<script>
+  function redirectTo2FA() {
+    window.location.href = "{{ url_for('auth.signup_2fa') }}";
+  }
+
+  function redirectToSmartmeter() {
+    window.location.href = "{{ url_for('main.view_smartmeters') }}";
+  }
+  function redirectToResetPW() {
+    window.location.href = "{{ url_for('auth.reset_password') }}";
+  }
+</script>
+
+
 {% endblock %}

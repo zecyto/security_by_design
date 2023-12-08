@@ -41,7 +41,7 @@ class DB_Manager:
         return self.cursor.fetchone()
     
     def get_login_data_by_mail(self, mail):
-        sql_command = f"SELECT password, salt, customer_number FROM {self.table_name} where email = \"{mail}\""
+        sql_command = f"SELECT password, salt, customer_number, failed_login FROM {self.table_name} where email = \"{mail}\""
         self.cursor.execute(sql_command)
         return self.cursor.fetchone()
 
@@ -62,6 +62,11 @@ class DB_Manager:
     
     def get_role_by_id(self, id):
         sql_command = f"SELECT role FROM {self.table_name} where customer_number = {id}"
+        self.cursor.execute(sql_command)
+        return self.cursor.fetchone()
+    
+    def get_failed_login(self, id):
+        sql_command = f"SELECT failed_login FROM {self.table_name} where customer_number = {id}"
         self.cursor.execute(sql_command)
         return self.cursor.fetchone()
     
