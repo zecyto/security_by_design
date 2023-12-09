@@ -31,11 +31,11 @@ admin= Blueprint('admin', __name__)
 @admin_required
 def delete_user():
     print("delete")
-    return render_template('admin_dashboard.html')
+    return render_template('admin_dashboard.html', user_authenticated = current_user.is_a)
 
-@admin.route('/admin/add_power_meter')
+@admin.route('/admin/reset_password')
 @login_required
 @admin_required
 def reset_user_pw():
     print("add")
-    return render_template('admin_dashboard.html')
+    return render_template('admin_dashboard.html', user_authenticated = current_user.is_a)

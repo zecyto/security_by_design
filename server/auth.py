@@ -10,6 +10,7 @@ import pyotp
 import base64
 import qrcode
 from io import BytesIO
+from server.validators import Validator
 
 
 from functools import wraps
@@ -41,7 +42,6 @@ def login_post():
     DB = DB_Manager("database/kundendatenbank.sql", "users")
     DB.connect()
     data = DB.get_login_data_by_mail(email)
-    print(f"Hallo was ist kaputt {data}")
     DB.show_all_users()
     if not data:
         data = ["Fail", "aa"*32, 0, 0]
@@ -49,11 +49,13 @@ def login_post():
     else:
         mfa = DB.get_mfa_by_id(data[2])
 
+
+    DB.disconnect()
+
     if data[3] >=8:
         flash('Your Account has been blocked cause you reached the maximum of failed Logins')
         return redirect(url_for('auth.login'))
 
-    DB.disconnect()
     
     user_pw = sha256(bytes(x ^ y for x, y in zip(bytes.fromhex(data[1]), bytes.fromhex(password)))).hexdigest()
 
@@ -98,8 +100,10 @@ def signup_post():
     email = request.form.get('email')
     fname = request.form.get('fname')
     lname = request.form.get('lname')
-    joining = date.today()
     password = request.form.get("hashedPassword")
+
+
+    joining = date.today()
     salt = secrets.token_hex(32)
     pw = sha256(bytes(x ^ y for x, y in zip(bytes.fromhex(salt), bytes.fromhex(password)))).hexdigest()
 
@@ -172,7 +176,6 @@ def logout():
 @login_required
 @admin_required
 def admin_dashboard():
-    # Nur Administratoren haben Zugriff
     return render_template('admin_dashboard.html', user_authenticated = current_user.is_authenticated)
 
 @auth.route('/reset_password')
@@ -212,3 +215,94 @@ def reset_password_post():
     
     flash('Falsches Password')
     return redirect(url_for('auth.reset_password'))
+
+
+@auth.route('/delete_account')
+@login_required
+def delete_account():
+    return render_template('delete_account.html', user_authenticated = current_user.is_authenticated)
+
+@auth.route('/delete_account', methods=['POST'])
+@login_required
+def delete_account_post():
+    email = current_user._email
+    password = request.form.get("hashedPassword")
+
+    if not Validator.is_sha256_hash(password):
+        flash("Leider scheinen sie eine ungültige Eingabe zu tätigen")
+        redirect(url_for('auth.delete_account'))
+
+    DB = DB_Manager("database/kundendatenbank.sql", "users")
+    DB.connect()
+    data = DB.get_login_data_by_mail(email)
+    DB.disconnect()
+
+    if not data:
+        data = ["Fail", "aa"*32]
+    
+    user_pw = sha256(bytes(x ^ y for x, y in zip(bytes.fromhex(data[1]), bytes.fromhex(password)))).hexdigest()
+
+    if user_pw == data[0]:
+        if data[2] != 1:
+            id = current_user._id
+            logout_user()
+            DB = DB_Manager("database/kundendatenbank.sql", "users")
+            DB.connect()
+            DB.delete_user(id)
+            DB.disconnect()
+            return redirect(url_for('main.index'))
+        
+        else:
+            flash("Der Admin Account kann nicht gelöscht werden")
+            redirect(url_for('auth.delete_account'))
+
+    flash("Falsches Passwort")
+    return redirect(url_for('auth.delete_account'))
+
+
+@auth.route('/delete_2fa')
+@login_required
+def delete_2fa():
+    return render_template('delete_2fa.html', user_authenticated = current_user.is_authenticated)
+
+@auth.route('/delete_2fa', methods=['POST'])
+@login_required
+def delete_2fa_post():
+    email = current_user._email
+    password = request.form.get("hashedPassword")
+
+    if not Validator.is_sha256_hash(password):
+        flash("Leider scheinen sie eine ungültige Eingabe zu tätigen")
+        redirect(url_for('auth.delete_2fa'))
+
+    DB = DB_Manager("database/kundendatenbank.sql", "users")
+    DB.connect()
+    data = DB.get_login_data_by_mail(email)
+    role = DB.get_role_by_id(data[2])
+    mfa = DB.get_mfa_by_id(data[2])
+    DB.disconnect()
+
+    if not data:
+        data = ["Fail", "aa"*32]
+    
+    user_pw = sha256(bytes(x ^ y for x, y in zip(bytes.fromhex(data[1]), bytes.fromhex(password)))).hexdigest()
+
+    if user_pw == data[0]:
+        if not mfa[0]:
+            flash("Es ist keine 2FA aktiviert")
+            redirect(url_for('auth.delete_2fa'))
+        if role != "admin":
+            id = current_user._id
+            DB = DB_Manager("database/kundendatenbank.sql", "users")
+            DB.connect()
+            DB.remove_mfa(id)
+            DB.disconnect()
+            flash("2FA wurde entfernt")
+            return redirect(url_for('main.profile'))
+        
+        else:
+            flash("Admin Accounts benötigen 2FA")
+            redirect(url_for('auth.delete_2fa'))
+
+    flash("Falsches Passwort")
+    return redirect(url_for('auth.delete_2fa'))

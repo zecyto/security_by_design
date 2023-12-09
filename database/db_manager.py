@@ -34,7 +34,12 @@ class DB_Manager:
         sql_command = f"UPDATE {self.table_name} SET {colname} = \"{new_val}\" WHERE customer_number = {customer_number}"
         self.cursor.execute(sql_command)
         self.connection.commit()
-
+    
+    def remove_mfa(self, customer_number):
+        sql_command = f"UPDATE {self.table_name} SET mfa = NULL WHERE customer_number = {customer_number}"
+        self.cursor.execute(sql_command)
+        self.connection.commit()
+    
     def get_user(self, customer_number):
         sql_command = f"SELECT * FROM {self.table_name} where customer_number = {customer_number}"
         self.cursor.execute(sql_command)
@@ -97,3 +102,4 @@ if __name__ == "__main__":
     #DB.get_login_data_by_mail("William@S")
     #DB.delete_user(2)
     DB.show_all_users()
+
