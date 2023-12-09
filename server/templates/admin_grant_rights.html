@@ -1,0 +1,38 @@
+{% extends "base.html" %}
+
+
+{% block content %}
+
+<div class="column is-4 is-offset-4">
+    <h3 class="title">Rechte verwalten</h3>
+    <div class="box">
+        {% with messages = get_flashed_messages() %}
+        {% if messages %}
+            <div class="notification is-danger">
+                {{ messages[0] }}
+            </div>
+        {% endif %}
+        {% endwith %}
+        <form method="POST" action="/admin/dashboard/grant_rights">
+
+            <div class="field">
+                <div class="control">
+                    <input class="input is-large" type="email" name="email" placeholder="Email" autofocus="" required>
+                </div>
+            </div>
+            <div class="field">
+                <label class="label">Rolle auswählen:</label>
+                <div class="control">
+                    <label class="radio">
+                        <input type="radio" name="role" value="admin" required> Admin
+                    </label>
+                    <label class="radio">
+                        <input type="radio" name="role" value="user" required> User
+                    </label>
+                </div>
+            </div>
+            <button class="button is-block is-info is-large is-fullwidth">Rechte zuweisen</button>
+        </form>
+    </div>
+</div>
+{% endblock %}

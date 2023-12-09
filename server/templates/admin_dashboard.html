@@ -4,44 +4,58 @@
   <h1 class="title">
     Admin Dashboard
   </h1>
+  {% with messages = get_flashed_messages() %}
+  {% if messages %}
+      <div class="notification is-success">
+          {{ messages[0] }}
+      </div>
+  {% endif %}
+  {% endwith %}
 
   <div class="container mt-5">
 
     <div class="row">
       <div class="col-md-4">
-        <button type="button" onclick="redirectToResetPW()" class="btn btn-primary btn-block mb-3">
-          Passwort ändern  <i class="fas fa-key"></i>
+        <button type="button" onclick="redirectToRemovePW()" class="btn btn-primary btn-block mb-3">
+          Passwort zurücksetzen<i class="fas fa-key"></i>
         </button>
       </div>
       <div class="col-md-4">
-        <button type="button" onclick="redirectTo2FA()" class="btn btn-success btn-block mb-3">2FA Token hinzufügen <i class="fas fa-key"></i></button>
+        <button type="button" onclick="redirectToUnlockAccount()" class="btn btn-success btn-block mb-3">Account entsperren<i class="fas fa-key"></i></button>
       </div>
     </div>
   
     <div class="row">
       <div class="col-md-4">
-        <button type="button" class="btn btn-danger btn-block mb-3">
-          Account löschen <i class="fas fa-trash"></i>
+        <button type="button" onclick="redirectToDeleteUser()" class="btn btn-danger btn-block mb-3">
+          Nutzeraccount löschen <i class="fas fa-trash"></i>
         </button>
         
       </div>
       <div class="col-md-4">
-        <button type="button" class="btn btn-danger btn-block mb-3"> 2FA entfernen <i class="fas fa-trash"></i></button>
+        <button type="button" onclick="redirectToGrantRights()" class="btn btn-info btn-block mb-3"> Rechte verwalten <i class="fas fa-trash"></i></button>
       </div>
     </div>
   </div>
   
   
   <script>
-    function redirectTo2FA() {
-      window.location.href = "{{ url_for('auth.signup_2fa') }}";
+    function redirectToUnlockAccount() {
+      window.location.href = "{{ url_for('admin.unlock_account') }}";
     }
   
     function redirectToSmartmeter() {
       window.location.href = "{{ url_for('main.view_smartmeters') }}";
     }
-    function redirectToResetPW() {
-      window.location.href = "{{ url_for('auth.reset_password') }}";
+    function redirectToRemovePW() {
+      window.location.href = "{{ url_for('admin.remove_password') }}";
+    }
+    function redirectToDeleteUser() {
+      window.location.href = "{{ url_for('admin.delete_user') }}";
+    }
+
+    function redirectToGrantRights() {
+      window.location.href = "{{ url_for('admin.grant_rights') }}";
     }
   </script>
   

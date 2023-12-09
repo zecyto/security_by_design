@@ -53,10 +53,11 @@ def login_post():
     DB.disconnect()
 
     if data[3] >=8:
-        flash('Your Account has been blocked cause you reached the maximum of failed Logins')
+        flash('Dein Account wurde wegen zu vielen fehlerhaften Loginversuchen gesperrt')
         return redirect(url_for('auth.login'))
 
-    
+    print(f"Hash: {password}")
+    print(f"salt: {data[1]}")
     user_pw = sha256(bytes(x ^ y for x, y in zip(bytes.fromhex(data[1]), bytes.fromhex(password)))).hexdigest()
 
     if mfa[0] and not otp and user_pw == data[0]:
@@ -85,8 +86,11 @@ def login_post():
         DB.update_user((data[2], "failed_login", counter))
         DB.disconnect()
     
-    if data[3] >= 5:
-        flash(f'Dein Account wird nach {8-data[3]} weiteren fehlgeschlagen Loginversuchen gesperrt')
+    if data[3] >= 4:
+        if 8-data[3]-1 > 0: 
+            flash(f'Dein Account wird nach {8-data[3]-1} weiteren fehlgeschlagen Loginversuchen gesperrt')
+        else:
+            flash('Dein Account wurde wegen zu vielen fehlerhaften Loginversuchen gesperrt')
     else:
         flash('Bitte überprüfe deine Logindaten und versuche es erneut.')
     return redirect(url_for('auth.login'))
@@ -291,7 +295,8 @@ def delete_2fa_post():
         if not mfa[0]:
             flash("Es ist keine 2FA aktiviert")
             redirect(url_for('auth.delete_2fa'))
-        if role != "admin":
+
+        if role[0] != "admin":
             id = current_user._id
             DB = DB_Manager("database/kundendatenbank.sql", "users")
             DB.connect()
