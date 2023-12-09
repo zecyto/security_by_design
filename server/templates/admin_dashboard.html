@@ -17,11 +17,14 @@
     <div class="row">
       <div class="col-md-4">
         <button type="button" onclick="redirectToRemovePW()" class="btn btn-primary btn-block mb-3">
-          Passwort zurücksetzen<i class="fas fa-key"></i>
+          Passwort zurücksetzen <i class="fas fa-key"></i>
         </button>
       </div>
       <div class="col-md-4">
-        <button type="button" onclick="redirectToUnlockAccount()" class="btn btn-success btn-block mb-3">Account entsperren<i class="fas fa-key"></i></button>
+        <button type="button" onclick="redirectToUnlockAccount()" class="btn btn-success btn-block mb-3">Account entsperren <i class="fas fa-key"></i></button>
+      </div>
+      <div class="col-md-4">
+        <button type="button" onclick="redirectToLogs()" class="btn btn-primary btn-block mb-3">Logs einsehen <i class="far fa-eye"></i></button>
       </div>
     </div>
   
@@ -44,8 +47,8 @@
       window.location.href = "{{ url_for('admin.unlock_account') }}";
     }
   
-    function redirectToSmartmeter() {
-      window.location.href = "{{ url_for('main.view_smartmeters') }}";
+    function redirectToLogs() {
+      window.location.href = "{{ url_for('admin.view_logs') }}";
     }
     function redirectToRemovePW() {
       window.location.href = "{{ url_for('admin.remove_password') }}";

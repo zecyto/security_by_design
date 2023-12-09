@@ -1,0 +1,47 @@
+{% extends "base.html" %}
+
+{% block content %}
+{% with messages = get_flashed_messages() %}
+{% if messages %}
+    <div class="notification is-danger">
+        {{ messages[0] }}
+    </div>
+{% endif %}
+{% endwith %}
+
+<div class="container mt-5">
+    <h3>Logs für Rechtezuweisungen</h3>
+    <table class="table">
+      <thead>
+        <tr>
+          <th>Editor</th>
+          <th>Rolle</th>
+          <th>Zielaccount</th>
+          <th>Timestamp</th>
+          <th>MAC</th>
+        </tr>
+      </thead>
+      <tbody>
+        {% for item in data %}
+          <tr>
+            <td>{{ item.editor_account }}</td>
+            <td>{{ item.role }}</td>
+            <td>{{ item.target_account }}</td>
+            <td>{{ item.timestamp}}</td>
+            <td class="{% if item.valid %}is-valid{% else %}is-invalid{% endif %}">{{ item.mac }}</td>
+          </tr>
+        {% endfor %}
+      </tbody>
+    </table>
+  </div>
+
+<style>
+    .is-valid {
+        color: #4CAF50;
+    }
+
+    .is-invalid {
+        color: #FF7575;
+    }
+</style>
+{% endblock %}
