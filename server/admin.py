@@ -123,7 +123,6 @@ def grant_rights_post():
         LOGDB = DB_LogManager("database/kundendatenbank.sql", "logs")
         LOGDB.connect()
         LOGDB.insert_log_entry(("NULL", current_user._email, role, email, timestamp, mac))
-        LOGDB.show_all_logs()
         LOGDB.disconnect()
         role = role.capitalize()
         flash(f'{role}rechte wurden erfolgreich zugewiesen')

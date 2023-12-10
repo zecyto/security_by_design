@@ -25,6 +25,20 @@
     
     </div>
     <div class="col-lg-5">
+      <p>
+        Um die Zwei-Faktor-Authentifizierung (2FA) einzurichten, folge diesen Schritten:
+      </p>
+      <ol>
+        <li>
+          Scanne den QR-Code oben mit deiner bevorzugten Authenticator-App, wie z.B. Google Authenticator.
+        </li>
+        <li>
+          Der Authenticator wird automatisch ein neues Konto hinzufügen, und du siehst ein Token.
+        </li>
+        <li>
+          Lasse den aktuellen Token ablaufen und gib den neu generierten Token in das unten stehende Feld ein und klicke auf "Token prüfen und 2FA Einstellungen speichern".
+        </li>
+      </ol>
 
       {% with messages = get_flashed_messages(with_categories=true) %}
       {% if messages %}

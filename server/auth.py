@@ -45,7 +45,6 @@ def login_post():
     DB = DB_Manager("database/kundendatenbank.sql", "users")
     DB.connect()
     data = DB.get_login_data_by_mail(email)
-    DB.show_all_users()
     if not data:
         data = ["Fail", "aa"*32, 0, 0]
         mfa = [None]   
@@ -122,7 +121,6 @@ def signup_post():
         return redirect(url_for('auth.signup'))
     else:
         DB.insert_user(("NULL", email, fname, lname, joining, pw), salt)
-        DB.show_all_users()
         DB.disconnect()
 
     return redirect(url_for('auth.login'))
@@ -150,9 +148,7 @@ def signup_2fa_form():
     if pyotp.TOTP(secret).verify(otp):
         DB = DB_Manager("database/kundendatenbank.sql", "users")
         DB.connect()
-        DB.show_all_users()
         DB.update_user((id, "mfa", secret))
-        DB.show_all_users()
         DB.disconnect()
 
         flash("Der 2FA Token ist gültig", "success")
