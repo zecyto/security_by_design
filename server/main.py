@@ -59,11 +59,8 @@ def view_smartmeters():
     for smartmeter in response:
         value = round(multi * smartmeter["counter"], 2)
         smartmeter["contract"] = f"{value} €"
-        # Angenommen, smartmeter["timestamp"] ist in Millisekunden
         timestamp = smartmeter["timestamp"]
-        # Umwandeln des Timestamps in ein datetime-Objekt
         datetime_obj = datetime.fromtimestamp(timestamp)
-        # Formatierung des Datums und der Uhrzeit
         formatted_date = datetime_obj.strftime('%d.%m.%Y %H:%M:%S')
         smartmeter["timestamp"] = formatted_date
 
