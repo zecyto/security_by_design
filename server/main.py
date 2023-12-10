@@ -2,6 +2,7 @@ from flask import Blueprint, render_template, flash, redirect, url_for
 from flask_login import current_user, login_required
 from database.db_manager import DB_Manager
 from . import db
+from datetime import datetime
 import requests
 
 main = Blueprint('main', __name__)
@@ -58,6 +59,10 @@ def view_smartmeters():
     for smartmeter in response:
         value = round(multi * smartmeter["counter"], 2)
         smartmeter["contract"] = f"{value} €"
+        timestamp = smartmeter["timestamp"]
+        datetime_obj = datetime.fromtimestamp(timestamp)
+        formatted_date = datetime_obj.strftime('%d.%m.%Y %H:%M:%S')
+        smartmeter["timestamp"] = formatted_date
 
     return render_template('smartmeters.html', data = response, user_authenticated = current_user.is_authenticated)
 
