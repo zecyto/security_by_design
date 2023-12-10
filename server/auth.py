@@ -59,8 +59,6 @@ def login_post():
         flash('Dein Account wurde wegen zu vielen fehlerhaften Loginversuchen gesperrt')
         return redirect(url_for('auth.login'))
 
-    print(f"Hash: {password}")
-    print(f"salt: {data[1]}")
     user_pw = sha256(bytes(x ^ y for x, y in zip(bytes.fromhex(data[1]), bytes.fromhex(password)))).hexdigest()
 
     if mfa[0] and not otp and user_pw == data[0]:
