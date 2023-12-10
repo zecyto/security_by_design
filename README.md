@@ -44,7 +44,10 @@ You need to install certain python moduls with pip (requirements.txt)
 2. Navigate to the Repo Folder
     <pre>cd security_by_design/</pre>
 
-3. Add path to repo to the site.conf in the nginx conf folder and then copy it to nginx-sites
+3. Add your local path to the Repo in the site.conf for the certificate and the private key
+    <pre>nano nginx-config/site.conf</pre>
+    
+4. Copy site.conf in the nginx-sites
     <pre>sudo cp nginx-config/site.conf /etc/nginx/sites-available/flask_app</pre>
 
 5. Enable the site
