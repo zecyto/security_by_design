@@ -1,7 +1,6 @@
 FROM python:3
 
 ENV FLASK_APP=server
-ENV FLASK_DEBUG=1
  
 # Create app directory
 WORKDIR /app
