@@ -75,6 +75,11 @@ class DB_Manager:
         self.cursor.execute(sql_command)
         return self.cursor.fetchone()
     
+    def get_contract(self, id):
+        sql_command = f"SELECT contract_model FROM {self.table_name} where customer_number = {id}"
+        self.cursor.execute(sql_command)
+        return self.cursor.fetchone()
+    
     def set_admin(self, id, colname = "role", new_val = "admin"):
         sql_command = f"UPDATE {self.table_name} SET {colname} = \"{new_val}\" WHERE customer_number = {id}"
         self.cursor.execute(sql_command)

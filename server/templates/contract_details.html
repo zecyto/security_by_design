@@ -1,0 +1,57 @@
+{% extends "base.html" %}
+
+{% block content %}
+
+
+
+<div class="container">
+    <h1>Willkommen bei L.B. Company!</h1>
+    <p>Wir freuen uns, Ihnen als unseren geschätzten Kunden folgende Vertragsdetails zu Ihrem Stromversorgungsvertrag bereitstellen zu können:</p>
+    
+    <h2>Preisgestaltung:</h2>
+    <ul>
+        {% if contract == "2" %}
+        <li>Sie nutzen unser Vertragsmodell <strong>2</strong></li>
+        <li>Strompreis: <strong>30 Cent pro Kilowattstunde</strong></li>
+        {% else %}
+        <li>Sie nutzen unser Vertragsmodell <strong>1</strong></li>
+        <li>Strompreis: <strong>50 Cent pro Kilowattstunde</strong></li>
+        {% endif %}
+        <li>Dieser Preis beinhaltet alle Kosten für die Stromerzeugung, Übertragung und alle anfallenden Steuern.</li>
+    </ul>
+    
+    <h2>Vertragsbedingungen:</h2>
+    <ul>
+        <li>Der Preis gilt für die gesamte Vertragslaufzeit.</li>
+        <li>Die Abrechnung erfolgt monatlich basierend auf dem tatsächlichen Stromverbrauch.</li>
+        <li>Alle Preise sind in Euro angegeben und beinhalten die gesetzliche Mehrwertsteuer.</li>
+    </ul>
+
+    <h2>Zahlungsbedingungen:</h2>
+    <ul>
+        <li>Die Zahlung erfolgt monatlich per Lastschriftverfahren.</li>
+        <li>Der Kunde verpflichtet sich, ein gültiges Bankkonto für die Lastschrifteinzüge bereitzustellen.</li>
+        <li>Bei verspäteter Zahlung können Verzugszinsen anfallen.</li>
+    </ul>
+
+    <h2>Kündigungsfristen:</h2>
+    <ul>
+        <li>Der Vertrag hat eine Mindestlaufzeit von 12 Monaten.</li>
+        <li>Nach Ablauf der Mindestlaufzeit ist der Vertrag mit einer Frist von einem Monat zum Monatsende kündbar.</li>
+    </ul>
+
+    <h2>Sonstige Bestimmungen:</h2>
+    <ul>
+        <li>Im Falle von Änderungen der gesetzlichen Steuern oder Abgaben behält sich L.B. Company das Recht vor, die Preise entsprechend anzupassen.</li>
+        <li>Der Kunde wird über alle wesentlichen Vertragsänderungen rechtzeitig informiert.</li>
+    </ul>
+
+    <p>Wir danken Ihnen für Ihr Vertrauen in L.B. Company und freuen uns darauf, Sie mit zuverlässiger und nachhaltiger Energie zu versorgen.</p>
+
+    <h2>Kontaktieren Sie uns:</h2>
+    <p>Telefon: +49 123 456 7890<br>
+    E-Mail: <a href="mailto:kundenservice@lb-company.de">kundenservice@lb-company.de</a></p>
+
+    <p><strong>L.B. Company - Ihr Partner für nachhaltige Energie</strong></p>
+</div>
+{% endblock %}

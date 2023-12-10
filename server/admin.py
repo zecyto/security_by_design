@@ -1,5 +1,4 @@
 from flask import Blueprint, render_template, redirect, url_for, request, flash
-from werkzeug.security import generate_password_hash, check_password_hash
 from database.db_manager import DB_Manager
 from database.db_logmanager import DB_LogManager
 from datetime import date
@@ -197,3 +196,36 @@ def view_logs():
     return render_template('admin_logs.html', data = validated_logs, user_authenticated = current_user.is_authenticated)
 
 
+
+@admin.route('/admin/dashboard/change_contract')
+@login_required
+@admin_required
+def change_contract():
+    return render_template('admin_change_contract.html', user_authenticated = current_user.is_authenticated)
+
+@admin.route('/admin/dashboard/change_contract', methods=['POST'])
+@login_required
+@admin_required
+def change_contract_post():
+    email = request.form.get("email")
+    modell = request.form.get("contract")
+
+    if int(modell) > 2 or int(modell) < 1:
+        flash('ungültiges Vertragsmodell')
+        return redirect(url_for('admin.change_contract'))
+    
+    DB = DB_Manager("database/kundendatenbank.sql", "users")
+    DB.connect()
+    data = DB.get_id_by_mail(email)
+
+
+    if not data:
+        DB.disconnect()
+        flash('Nutzer mit dieser Email existiert nicht')
+        return redirect(url_for('admin.change_contract'))
+    
+    else:
+        DB.update_user((data[0], "contract_model", modell))
+        DB.disconnect()
+        flash(f'Vertragsmodell wurde erfolgreich zu gewiesen')
+        return redirect(url_for('auth.admin_dashboard'))

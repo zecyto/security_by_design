@@ -19,7 +19,8 @@ joining DATE,
 password VARCHAR(64),
 salt VARCHAR(64),
 mfa VARCHAR(64) NULL,
-failed_login INTEGER DEFAULT 0);"""
+failed_login INTEGER DEFAULT 0,
+contract_model INTEGER DEFAULT 1);"""
 cursor.execute(sql_command)
 
 sql_command = """

@@ -38,6 +38,9 @@
     <div class="col-md-4">
       <button type="button" onclick="redirectToDelete2FA()" class="btn btn-danger btn-block mb-3"> 2FA entfernen <i class="fas fa-trash"></i></button>
     </div>
+    <div class="col-md-4">
+      <button type="button" onclick="redirectToContract()" class="btn btn-primary btn-block mb-3"> Vertragsmodell einsehen <i class="far fa-eye"></i></button>
+    </div>
   </div>
 </div>
 
@@ -58,6 +61,9 @@
   }
   function redirectToDelete2FA() {
     window.location.href = "{{ url_for('auth.delete_2fa') }}";
+  }
+  function redirectToContract() {
+    window.location.href = "{{ url_for('main.contract_details') }}";
   }
 </script>
 
