@@ -5,12 +5,12 @@ from server.User import User
 from database.db_manager import DB_Manager
 from flask_sslify import SSLify
 
-# init SQLAlchemy so we can use it later in our models
 db = SQLAlchemy()
 
 def create_app():
     app = Flask(__name__)
 
+    # necessairy for Login Manager
     app.config['SECRET_KEY'] = 'secret-key-goes-here'
     app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///db.sqlite'
 
@@ -28,15 +28,13 @@ def create_app():
         role = db.get_role_by_id(user_id)
         if not data or not role:
             return None
-        db.disconnect()                                     # new
+        db.disconnect()                                    
         return User(int(user_id), data[0], data[1], role[0])
 
 
-    # blueprint for auth routes in our app
     from .auth import auth as auth_blueprint
     app.register_blueprint(auth_blueprint)
 
-    # blueprint for non-auth parts of app
     from .main import main as main_blueprint
     app.register_blueprint(main_blueprint)
 
