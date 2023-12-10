@@ -41,8 +41,8 @@ You need to install certain python moduls with pip (requirements.txt)
     <pre>sudo apt update</pre>
     <pre>sudo apt install nginx</pre>
 
-2. Navigate to your nginx sites
-     <pre>cd /etc/nginx/sites-available/</pre>
+2. Navigate to the Repo Folder
+    <pre>cd security_by_design/</pre>
 
 3. Copy site.conf to nginx sites
     <pre>sudo cp nginx-config/site.conf /etc/nginx/sites-available/flask_app</pre>
@@ -63,8 +63,26 @@ You need to install certain python moduls with pip (requirements.txt)
 1. email: k.stroetmann@example.org  pw: secbydesign
 2. email: s.claus@christmas.org     pw: secbydesign
 
+Actions:    
+1. Change Password
+2. Delete Account
+3. Add new 2FA Token
+4. Remove 2FA Token
+5. View your Smartmeters
+6. View your Contract Details (Contract Model 1 or 2)
+
+
 ## Admin Account (you will need an 2F-Authenticator App)
 
 1. email: admin@admin pw: admin 2fa setup key:
-2. Setup Key for 2FA: FJMXJNVZSYV5A4PFOIWC5MXQO5KSMUOT (You can simply add this code in e.g. Google Authenticator App)
+2. Setup Key for 2FA: (You can simply add this code in e.g. Google Authenticator App)
+    <pre>FJMXJNVZSYV5A4PFOIWC5MXQO5KSMUOT</pre>
 3. Has access to the hidden site /admin/dashboard
+
+Actions on Admin Dashboard:    
+1. Reset the password of an User Account
+2. Delete an User Account
+3. Unlock an Account (Reset the failed Login tries)
+4. Manage Rights
+5. Manage Contract details
+6. View Logs of permission changes (green mac signals that its valid)
