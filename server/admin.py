@@ -48,7 +48,6 @@ admin= Blueprint('admin', __name__)
 @login_required
 @admin_required
 def delete_user():
-    print("delete")
     return render_template('admin_delete_user.html', user_authenticated = current_user.is_authenticated)
 
 
@@ -79,7 +78,6 @@ def delete_user_post():
 @login_required
 @admin_required
 def grant_rights():
-    print("delete")
     return render_template('admin_grant_rights.html', user_authenticated = current_user.is_authenticated)
 
 
@@ -211,7 +209,6 @@ def view_logs():
     for log in all_logs:
         validated_log = validate_mac(log)
         validated_logs.append(validated_log)
-    print(validated_logs)
     return render_template('admin_logs.html', data = validated_logs, user_authenticated = current_user.is_authenticated)
 
 

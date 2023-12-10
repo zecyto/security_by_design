@@ -18,7 +18,6 @@ class SmartmeterDataHandler():
             return []
         else:
             response = response.json()
-            print(response)
         return response["smartmeters"]
 
 
@@ -78,5 +77,4 @@ def contract_details():
         flash("Kein Vertrag gefunden")
         return redirect(url_for('main.profile'))
 
-    print(contract)
     return render_template('contract_details.html', contract=str(contract[0]), user_authenticated = current_user.is_authenticated)
