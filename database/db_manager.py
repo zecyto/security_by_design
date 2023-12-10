@@ -107,4 +107,5 @@ if __name__ == "__main__":
     #DB.get_login_data_by_mail("William@S")
     #DB.delete_user(2)
     DB.show_all_users()
+    DB.disconnect()
 

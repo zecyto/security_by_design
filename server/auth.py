@@ -155,10 +155,10 @@ def signup_2fa_form():
         DB.show_all_users()
         DB.disconnect()
 
-        flash("The TOTP 2FA token is valid", "success")
+        flash("Der 2FA Token ist gültig", "success")
         return redirect(url_for('main.profile'))
     else:
-        flash("You have supplied an invalid 2FA token! Please scan the new QR-Code!", "danger")
+        flash("Der 2FA Token ist nicht gültig! Bitte den neuen QR-Code scannen!", "danger")
         return redirect(url_for("auth.signup_2fa"))
 
 
