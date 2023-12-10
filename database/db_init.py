@@ -11,10 +11,10 @@ except:
 sql_command = """
 CREATE TABLE users ( 
 customer_number INTEGER PRIMARY KEY,
-email VARCHAR(30),
+email VARCHAR(45),
 role VARCHAR(10) DEFAULT "user",
-fname VARCHAR(20), 
-lname VARCHAR(30), 
+fname VARCHAR(35), 
+lname VARCHAR(35), 
 joining DATE,
 password VARCHAR(64),
 salt VARCHAR(64),

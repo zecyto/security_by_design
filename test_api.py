@@ -24,3 +24,5 @@ def generate_mac(message):
 message = 'admin@admin'.encode() + 'user'.encode() + 'test@test'.encode() + '1702162529.3351912'.encode()
 
 print(generate_mac(message))
+
+print("x" * 40)

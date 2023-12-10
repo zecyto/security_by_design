@@ -1,5 +1,4 @@
 from flask import Blueprint, render_template, redirect, url_for, request, flash
-from werkzeug.security import generate_password_hash, check_password_hash
 from database.db_manager import DB_Manager
 from datetime import date
 from hashlib import sha256
@@ -37,7 +36,11 @@ def login():
 def login_post():
     email = request.form.get('email')
     password = request.form.get("hashedPassword")
-    print(password)
+    if email != "admin@admin":
+        if not Validator.is_email(email) or not Validator.is_sha256_hash(password):
+            flash("Leider scheinen sie eine ungültige Eingabe zu tätigen")
+            return redirect(url_for('auth.login'))
+
     otp = request.form.get("otp")
     DB = DB_Manager("database/kundendatenbank.sql", "users")
     DB.connect()
@@ -105,7 +108,9 @@ def signup_post():
     fname = request.form.get('fname')
     lname = request.form.get('lname')
     password = request.form.get("hashedPassword")
-
+    if not Validator.is_email(email) or not Validator.is_sha256_hash(password) or not Validator.is_name(fname) or not Validator.is_name(lname):
+        flash("Leider scheinen sie eine ungültige Eingabe zu tätigen")
+        return redirect(url_for('auth.signup'))
 
     joining = date.today()
     salt = secrets.token_hex(32)
@@ -115,7 +120,7 @@ def signup_post():
     DB.connect()
     if DB.get_login_data_by_mail(email):
         DB.disconnect()
-        flash('Email address already exists')
+        flash('Email existiert bereits')
         return redirect(url_for('auth.signup'))
     else:
         DB.insert_user(("NULL", email, fname, lname, joining, pw), salt)
@@ -127,17 +132,11 @@ def signup_post():
 @auth.route("/signup/2fa/")
 @login_required
 def signup_2fa():
-    # Generating random secret key for authentication
     secret = pyotp.random_base32()
-
     mail = current_user._email
-    # Generate OTP URI for QR Code
     otp_uri = pyotp.totp.TOTP(secret).provisioning_uri(mail, issuer_name='LB-Company')
-
-    # Generate QR Code
     qr = qrcode.make(otp_uri)
 
-    # Convert QR Code image to base64 format
     buffered = BytesIO()
     qr.save(buffered, format="PNG")
     qr_base64 = base64.b64encode(buffered.getvalue()).decode("utf-8")
@@ -147,12 +146,9 @@ def signup_2fa():
 @auth.route("/signup/2fa/", methods=["POST"])
 @login_required
 def signup_2fa_form():
-    # getting secret key used by user
     secret = request.form.get("secret")
-    # getting OTP provided by user
     otp = request.form.get("otp")
     id = current_user._id
-    # verifying submitted OTP with PyOTP
     if pyotp.TOTP(secret).verify(otp):
         DB = DB_Manager("database/kundendatenbank.sql", "users")
         DB.connect()
@@ -164,7 +160,6 @@ def signup_2fa_form():
         flash("The TOTP 2FA token is valid", "success")
         return redirect(url_for('main.profile'))
     else:
-        # inform users if OTP is invalid
         flash("You have supplied an invalid 2FA token! Please scan the new QR-Code!", "danger")
         return redirect(url_for("auth.signup_2fa"))
 
@@ -192,7 +187,11 @@ def reset_password():
 def reset_password_post():
     email = current_user._email
     password = request.form.get("hashedPasswordOld")
-    print(password)
+
+    if not Validator.is_email(email) or not Validator.is_sha256_hash(password):
+        flash("Leider scheinen sie eine ungültige Eingabe zu tätigen")
+        return redirect(url_for('auth.reset_password'))
+
     DB = DB_Manager("database/kundendatenbank.sql", "users")
     DB.connect()
     data = DB.get_login_data_by_mail(email)
@@ -205,6 +204,10 @@ def reset_password_post():
 
     if user_pw == data[0]:
             password = request.form.get("hashedPasswordNew")
+            if not Validator.is_sha256_hash(password):
+                flash("Leider scheinen sie eine ungültige Eingabe zu tätigen")
+                return redirect(url_for('auth.reset_password'))
+
             salt = secrets.token_hex(32)
             pw = sha256(bytes(x ^ y for x, y in zip(bytes.fromhex(salt), bytes.fromhex(password)))).hexdigest()
             DB = DB_Manager("database/kundendatenbank.sql", "users")
@@ -212,7 +215,6 @@ def reset_password_post():
             DB.update_user((current_user._id, "password", pw))
             DB.update_user((current_user._id, "salt", salt))
             DB.disconnect()
-            print("Ahjo")
             flash("Passwort erfolgreich geändert", 'success')
             return redirect(url_for('main.profile'))
 
@@ -232,9 +234,9 @@ def delete_account_post():
     email = current_user._email
     password = request.form.get("hashedPassword")
 
-    if not Validator.is_sha256_hash(password):
+    if not Validator.is_email(email) or not Validator.is_sha256_hash(password):
         flash("Leider scheinen sie eine ungültige Eingabe zu tätigen")
-        redirect(url_for('auth.delete_account'))
+        return redirect(url_for('auth.delete_account'))
 
     DB = DB_Manager("database/kundendatenbank.sql", "users")
     DB.connect()
@@ -258,7 +260,7 @@ def delete_account_post():
         
         else:
             flash("Der Admin Account kann nicht gelöscht werden")
-            redirect(url_for('auth.delete_account'))
+            return redirect(url_for('auth.delete_account'))
 
     flash("Falsches Passwort")
     return redirect(url_for('auth.delete_account'))
@@ -275,9 +277,9 @@ def delete_2fa_post():
     email = current_user._email
     password = request.form.get("hashedPassword")
 
-    if not Validator.is_sha256_hash(password):
+    if not Validator.is_email(email) or not Validator.is_sha256_hash(password):
         flash("Leider scheinen sie eine ungültige Eingabe zu tätigen")
-        redirect(url_for('auth.delete_2fa'))
+        return redirect(url_for('auth.delete_2fa'))
 
     DB = DB_Manager("database/kundendatenbank.sql", "users")
     DB.connect()
@@ -294,7 +296,7 @@ def delete_2fa_post():
     if user_pw == data[0]:
         if not mfa[0]:
             flash("Es ist keine 2FA aktiviert")
-            redirect(url_for('auth.delete_2fa'))
+            return redirect(url_for('auth.delete_2fa'))
 
         if role[0] != "admin":
             id = current_user._id

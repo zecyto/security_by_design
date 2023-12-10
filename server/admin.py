@@ -5,6 +5,8 @@ from datetime import date
 from hashlib import sha256
 from flask_login import login_user, logout_user, login_required, current_user
 from server.User import User
+from server.validators import Validator
+
 import secrets
 from io import BytesIO
 import hmac
@@ -55,6 +57,11 @@ def delete_user():
 @admin_required
 def delete_user_post():
     email = request.form.get("email")
+    if not Validator.is_email(email):
+        flash('Leider scheinen sie eine ungültige Eingabe zu tätigen')
+        return redirect(url_for('admin.delete_user'))
+
+
     DB = DB_Manager("database/kundendatenbank.sql", "users")
     DB.connect()
     data = DB.get_id_by_mail(email)
@@ -82,6 +89,10 @@ def grant_rights():
 def grant_rights_post():
     email = request.form.get("email")
     role = request.form.get("role")
+    if not Validator.is_email(email) or role not in ["user", "admin"]:
+        flash('Leider scheinen sie eine ungültige Eingabe zu tätigen')
+        return redirect(url_for('admin.grant_rights'))
+
     DB = DB_Manager("database/kundendatenbank.sql", "users")
     DB.connect()
     data = DB.get_id_by_mail(email)
@@ -132,6 +143,10 @@ def unlock_account():
 @admin_required
 def unlock_account_post():
     email = request.form.get("email")
+    if not Validator.is_email(email):
+        flash('Leider scheinen sie eine ungültige Eingabe zu tätigen')
+        return redirect(url_for('admin.unlock_account'))
+
     DB = DB_Manager("database/kundendatenbank.sql", "users")
     DB.connect()
     data = DB.get_id_by_mail(email)
@@ -161,6 +176,10 @@ def remove_password():
 @admin_required
 def remove_password_post():
     email = request.form.get("email")
+    if not Validator.is_email(email):
+        flash('Leider scheinen sie eine ungültige Eingabe zu tätigen')
+        return redirect(url_for('admin.remove_password'))
+
     DB = DB_Manager("database/kundendatenbank.sql", "users")
     DB.connect()
     data = DB.get_id_by_mail(email)
@@ -209,6 +228,11 @@ def change_contract():
 def change_contract_post():
     email = request.form.get("email")
     modell = request.form.get("contract")
+
+    if not Validator.is_email(email):
+        flash('Leider scheinen sie eine ungültige Eingabe zu tätigen')
+        return redirect(url_for('admin.change_contract'))
+
 
     if int(modell) > 2 or int(modell) < 1:
         flash('ungültiges Vertragsmodell')

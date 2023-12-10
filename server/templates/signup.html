@@ -42,33 +42,32 @@
         {% with messages = get_flashed_messages() %}
         {% if messages %}
             <div class="notification is-danger">
-            {{ messages[0] }}. Go to <a href="{{ url_for('auth.login') }}">login page</a>.
+            {{ messages[0] }}
             </div>
         {% endif %}
         {% endwith %}
         <form method="POST" action="/signup" onsubmit="hashPassword()">
             <div class="field">
                 <div class="control">
-                    <input class="input is-large" type="email" name="email" placeholder="Email" autofocus="" required>
+                    <input class="input is-large" type="email" name="email" maxlength="40" placeholder="Email" autofocus="" required>
                 </div>
             </div>
 
             <div class="field">
                 <div class="control">
-                    <input class="input is-large" type="text" name="fname" placeholder="First name" autofocus="" required>
+                    <input class="input is-large" type="text" name="fname" maxlength="30" placeholder="First name" autofocus="" required>
                 </div>
             </div>
 
             <div class="field">
                 <div class="control">
-                    <input class="input is-large" type="text" name="lname" placeholder="Last name" autofocus="" required>
+                    <input class="input is-large" type="text" name="lname" maxlength="30" placeholder="Last name" autofocus="" required>
                 </div>
             </div>
 
             <div class="field">
                 <div class="control">
-                    <!-- Original password input -->
-                    <input class="input is-large" type="password" id="password" name="password" placeholder="Password" required pattern="\S{8,}" title="Das Passwort muss mindestens 8 nicht leere Zeichen enthalten" required>
+                    <input class="input is-large" type="password" id="password" name="password" maxlength="40" placeholder="Password" required pattern="\S{8,}" title="Das Passwort muss mindestens 8 nicht leere Zeichen enthalten" required>
                 </div>
             </div>
 
