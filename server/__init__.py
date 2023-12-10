@@ -26,6 +26,8 @@ def create_app():
         db.connect()
         data = db.get_mail_and_name_by_id(user_id)
         role = db.get_role_by_id(user_id)
+        if not data or not role:
+            return None
         db.disconnect()                                     # new
         return User(int(user_id), data[0], data[1], role[0])
 

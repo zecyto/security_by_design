@@ -188,7 +188,7 @@ def reset_password_post():
     email = current_user._email
     password = request.form.get("hashedPasswordOld")
 
-    if not Validator.is_email(email) or not Validator.is_sha256_hash(password):
+    if not Validator.is_sha256_hash(password):
         flash("Leider scheinen sie eine ungültige Eingabe zu tätigen")
         return redirect(url_for('auth.reset_password'))
 
@@ -234,7 +234,7 @@ def delete_account_post():
     email = current_user._email
     password = request.form.get("hashedPassword")
 
-    if not Validator.is_email(email) or not Validator.is_sha256_hash(password):
+    if not Validator.is_sha256_hash(password):
         flash("Leider scheinen sie eine ungültige Eingabe zu tätigen")
         return redirect(url_for('auth.delete_account'))
 
@@ -277,7 +277,7 @@ def delete_2fa_post():
     email = current_user._email
     password = request.form.get("hashedPassword")
 
-    if not Validator.is_email(email) or not Validator.is_sha256_hash(password):
+    if not Validator.is_sha256_hash(password):
         flash("Leider scheinen sie eine ungültige Eingabe zu tätigen")
         return redirect(url_for('auth.delete_2fa'))
 
