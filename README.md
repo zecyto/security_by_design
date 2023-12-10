@@ -27,7 +27,7 @@ You need to install certain python moduls with pip (requirements.txt)
     <pre>export FLASK_APP=server</pre>
 
 3. Run the Server
-    <pre>flask run</pre>
+    <pre>flask run --cert server_config/cert/certificate.crt --key server_config/cert/private_key.key</pre>
 
 4. Visite the Website on
     <pre>https://127.0.0.1:5000</pre>
