@@ -6,9 +6,9 @@
     document.addEventListener("DOMContentLoaded", function() {
         var form = document.querySelector("form");
         form.addEventListener("submit", function(event) {
-            event.preventDefault(); // Verhindert das sofortige Absenden des Formulars
+            event.preventDefault(); 
             hashPassword().then(function() {
-                form.submit(); // Sendet das Formular, nachdem das Passwort gehasht wurde
+                form.submit();
             });
         });
     });
@@ -23,7 +23,7 @@
         console.log(hashedPassword);
 
         hashedPasswordInput.value = hashedPassword;
-        passwordInput.value = ''; // Löscht das originale Passwortfeld
+        passwordInput.value = '';
 
     }
 
@@ -56,7 +56,6 @@
 
             <div class="field">
                 <div class="control">
-                    <!-- Original password input -->
                     <input class="input is-large" type="password" id="password" name="password" placeholder="Password" required>
                 </div>
             </div>

@@ -6,9 +6,9 @@
     document.addEventListener("DOMContentLoaded", function() {
         var form = document.querySelector("form");
         form.addEventListener("submit", function(event) {
-            event.preventDefault(); // Verhindert das sofortige Absenden des Formulars
+            event.preventDefault(); 
             hashPassword().then(function() {
-                form.submit(); // Sendet das Formular, nachdem das Passwort gehasht wurde
+                form.submit(); 
             });
         });
     });
@@ -22,7 +22,7 @@
         console.log(hashedPassword);
 
         hashedPasswordInput.value = hashedPassword;
-        passwordInput.value = ''; // Löscht das originale Passwortfeld
+        passwordInput.value = ''; 
 
     }
 
@@ -37,7 +37,7 @@
 </script>
 
 <div class="column is-4 is-offset-4">
-    <h3 class="title">Sign Up</h3>
+    <h3 class="title">Registrieren</h3>
     <div class="box">
         {% with messages = get_flashed_messages() %}
         {% if messages %}
@@ -77,7 +77,7 @@
                 </div>
             </div>
             
-            <button class="button is-block is-info is-large is-fullwidth">Sign Up</button>
+            <button class="button is-block is-info is-large is-fullwidth">Registrieren</button>
         </form>
     </div>
 </div>
